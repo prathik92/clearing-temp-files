@@ -1,0 +1,22 @@
+$date = Get-Date -Format "dd.mm.yy-HH:mm"
+$win_temp_folder = "C:\Windows\Temp"
+$outfile = "C:\tmp\clear_tmp.log"
+$temp_folders = Get-Item C:\Users\prkumar\AppData\Local\Temp
+
+    # CLEAR APPDATA LOCAL TEMP FOLDER PER USER
+    foreach ($temp_folder in $temp_folders)
+        {
+        $user_temp_files = Get-ChildItem -Path $temp_folder
+        $user_temp_files_count = ($user_temp_files | measure).Count
+            if ($user_temp_files_count -gt 0)
+            {
+            echo "#########################################################################" | Out-File $outfile -Append
+            echo "$date" | Out-File $outfile -Append
+            $user_temp_folder_fullname = $temp_folder.FullName
+            echo "Clearing $user_temp_folder_fullname" | Out-File $outfile -Append
+            Remove-Item $user_temp_folder_fullname\* -Recurse -Force   
+            }
+        }
+        # CLEAR WINDOWS TEMP FOLDER
+        echo "Clearing $win_temp_folder" | Out-File $outfile -Append
+        Remove-Item $win_temp_folder\* -Recurse -Force
